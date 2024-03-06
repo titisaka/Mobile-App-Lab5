@@ -1,13 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { StudentService } from './Services/student.service';
+import { WeatherService } from './Services/weather.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'json-app';
+  students : any = [];
+  weather : any = [];
+  temp : string = "";
+
+  constructor(private studentService:StudentService, private weatherService:WeatherService){}
+
+  ngOnInit(): void {
+    this.studentService.GetStudentData().subscribe(
+      (data)=>{
+        this.students = data.students;
+      }
+    );
+
+    this.weatherService.GetWeatherData().subscribe(
+      (data)=>{
+        this.weather = data.weather;
+        this.temp = data.main;
+      }
+    );
+  }
 }
